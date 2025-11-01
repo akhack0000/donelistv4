@@ -24,28 +24,28 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - mysql
+      - postgres
     environment:
-      - DB_HOST=mysql
+      - DB_HOST=postgres
       - DB_DATABASE=donelistv4
       - DB_USERNAME=donelistv4_user
       - DB_PASSWORD=donelistv4_pass
+      - DB_PORT=5432
     networks:
       - donelistv4_network
 
-  # MySQL データベース
-  mysql:
-    image: mysql:8.0
-    container_name: donelistv4_mysql
+  # PostgreSQL データベース
+  postgres:
+    image: postgres:16-alpine
+    container_name: donelistv4_postgres
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      MYSQL_DATABASE: donelistv4
-      MYSQL_USER: donelistv4_user
-      MYSQL_PASSWORD: donelistv4_pass
-      MYSQL_ROOT_PASSWORD: root_password
+      POSTGRES_DB: donelistv4
+      POSTGRES_USER: donelistv4_user
+      POSTGRES_PASSWORD: donelistv4_pass
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - donelistv4_network
 
@@ -54,5 +54,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
+  postgres_data:
     driver: local
