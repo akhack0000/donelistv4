@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Nginx Webサーバー
+  nginx:
+    image: nginx:alpine
+    container_name: donelistv4_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - donelistv4_network
+
+  # PHP-FPM
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: donelistv4_php
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=donelistv4
+      - DB_USERNAME=donelistv4_user
+      - DB_PASSWORD=donelistv4_pass
+    networks:
+      - donelistv4_network
+
+  # MySQL データベース
+  mysql:
+    image: mysql:8.0
+    container_name: donelistv4_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: donelistv4
+      MYSQL_USER: donelistv4_user
+      MYSQL_PASSWORD: donelistv4_pass
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - donelistv4_network
+
+networks:
+  donelistv4_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
