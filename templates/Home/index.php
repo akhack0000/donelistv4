@@ -117,13 +117,18 @@
 
 .btn {
     width: 100%;
-    padding: 12px 30px;
+    padding: 24px 30px;
     font-size: 1.1em;
+    line-height: 1.8;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.3s;
     font-weight: 500;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-primary {
