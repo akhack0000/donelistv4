@@ -58,6 +58,11 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
         /*
+         * /home endpoint for DonelistV4 title page
+         */
+        $builder->connect('/home', ['controller' => 'Home', 'action' => 'index']);
+
+        /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */
         $builder->connect('/pages/*', 'Pages::display');
