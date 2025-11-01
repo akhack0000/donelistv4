@@ -116,6 +116,7 @@
 }
 
 .btn {
+    width: 100%;
     padding: 12px 30px;
     font-size: 1.1em;
     border: none;
