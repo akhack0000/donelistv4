@@ -15,16 +15,14 @@
     <!-- ラベル登録フォーム -->
     <div class="label-form-section">
         <h2>ラベル登録</h2>
-        <?= $this->Form->create($label) ?>
-        <div class="form-group">
+        <?= $this->Form->create($label, ['class' => 'label-form']) ?>
             <?= $this->Form->control('name', [
                 'label' => 'ラベル名',
                 'placeholder' => '例: 読書、運動、勉強',
                 'required' => true,
-                'class' => 'form-input'
+                'class' => 'form-control'
             ]) ?>
-        </div>
-        <?= $this->Form->button('登録', ['class' => 'btn-primary']) ?>
+            <?= $this->Form->button('登録', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
         <?= $this->Form->end() ?>
     </div>
 
@@ -84,27 +82,52 @@
     color: #2c3e50;
 }
 
-.form-group {
-    margin-bottom: 20px;
+.label-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.form-input {
+.label-form .input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label-form label {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.label-form .form-control {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 1.1em;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
-.btn-primary {
-    background: #3498db;
-    color: white;
+.label-form .form-control:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn {
     padding: 12px 30px;
     font-size: 1.1em;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.3s;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
 }
 
 .btn-primary:hover {
