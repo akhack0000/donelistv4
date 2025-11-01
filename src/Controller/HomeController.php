@@ -40,4 +40,25 @@ class HomeController extends AppController
         $this->set(compact('label', 'labels'));
         $this->set('title', 'DonelistV4');
     }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Label id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $labelsTable = $this->fetchTable('Labels');
+        $label = $labelsTable->get($id);
+
+        if ($labelsTable->delete($label)) {
+            $this->Flash->success('ラベルが削除されました。');
+        } else {
+            $this->Flash->error('ラベルの削除に失敗しました。');
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
 }

@@ -33,8 +33,18 @@
             <div class="labels-grid">
                 <?php foreach ($labels as $labelItem): ?>
                     <div class="label-card">
-                        <span class="label-name"><?= h($labelItem->name) ?></span>
-                        <span class="label-date"><?= $labelItem->created->format('Y-m-d H:i') ?></span>
+                        <div class="label-info">
+                            <span class="label-name"><?= h($labelItem->name) ?></span>
+                            <span class="label-date"><?= $labelItem->created->format('Y-m-d H:i') ?></span>
+                        </div>
+                        <?= $this->Form->postLink(
+                            '削除',
+                            ['action' => 'delete', $labelItem->id],
+                            [
+                                'confirm' => '本当に削除しますか?',
+                                'class' => 'btn-delete'
+                            ]
+                        ) ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -172,6 +182,13 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.label-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
 .label-name {
     font-size: 1.3em;
     font-weight: bold;
@@ -181,6 +198,21 @@
 .label-date {
     font-size: 0.9em;
     color: #7f8c8d;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+    transition: background 0.3s;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
 }
 
 .no-labels {

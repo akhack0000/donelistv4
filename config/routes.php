@@ -55,6 +55,9 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/home', ['controller' => 'Home', 'action' => 'index']);
+        $builder->connect('/home/delete/{id}', ['controller' => 'Home', 'action' => 'delete'])
+            ->setPass(['id'])
+            ->setMethods(['POST', 'DELETE']);
 
         /*
          * Connect catchall routes for all controllers.
