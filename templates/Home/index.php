@@ -57,7 +57,7 @@
                                 'class' => 'message-input',
                                 'required' => false
                             ]) ?>
-                            <?= $this->Form->button('実績登録', [
+                            <?= $this->Form->button('記録', [
                                 'type' => 'submit',
                                 'class' => 'btn-add-done'
                             ]) ?>
