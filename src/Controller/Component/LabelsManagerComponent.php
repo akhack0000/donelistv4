@@ -11,7 +11,7 @@ use Cake\ORM\TableRegistry;
  *
  * ラベル関連の機能を提供するコンポーネント
  */
-class LabelsComponent extends Component
+class LabelsManagerComponent extends Component
 {
     /**
      * ラベルテーブル

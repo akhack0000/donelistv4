@@ -12,7 +12,7 @@ use Cake\ORM\TableRegistry;
  *
  * 実績関連の機能を提供するコンポーネント
  */
-class DonesComponent extends Component
+class DonesManagerComponent extends Component
 {
     /**
      * 実績テーブル

@@ -18,8 +18,8 @@ class HomeController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->loadComponent('LabelsManager', ['className' => 'Labels']);
-        $this->loadComponent('DonesManager', ['className' => 'Dones']);
+        $this->loadComponent('LabelsManager');
+        $this->loadComponent('DonesManager');
     }
 
     /**

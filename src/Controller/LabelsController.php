@@ -18,7 +18,7 @@ class LabelsController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->loadComponent('LabelsManager', ['className' => 'Labels']);
+        $this->loadComponent('LabelsManager');
     }
 
     /**

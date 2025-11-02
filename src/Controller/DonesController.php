@@ -18,7 +18,7 @@ class DonesController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->loadComponent('DonesManager', ['className' => 'Dones']);
+        $this->loadComponent('DonesManager');
     }
 
     /**
