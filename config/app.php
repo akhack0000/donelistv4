@@ -51,7 +51,7 @@ return [
         'namespace' => 'App',
         'encoding' => env('APP_ENCODING', 'UTF-8'),
         'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
-        'defaultTimezone' => env('APP_DEFAULT_TIMEZONE', 'UTC'),
+        'defaultTimezone' => env('APP_DEFAULT_TIMEZONE', 'Asia/Tokyo'),
         'base' => false,
         'dir' => 'src',
         'webroot' => 'webroot',
@@ -283,7 +283,7 @@ return [
             'className' => Connection::class,
             'driver' => Postgres::class,
             'persistent' => false,
-            'timezone' => 'UTC',
+            'timezone' => 'Asia/Tokyo',
 
             /*
              * For PostgreSQL use utf8
@@ -312,7 +312,7 @@ return [
             'className' => Connection::class,
             'driver' => Postgres::class,
             'persistent' => false,
-            'timezone' => 'UTC',
+            'timezone' => 'Asia/Tokyo',
             'encoding' => 'utf8',
             'flags' => [],
             'cacheMetadata' => true,

@@ -12,18 +12,26 @@
         <p class="lead">実績記録Webサービス</p>
     </div>
 
-    <!-- ラベル登録フォーム -->
-    <div class="label-form-section">
-        <h2>ラベル登録</h2>
-        <?= $this->Form->create($label, ['url' => ['controller' => 'Labels', 'action' => 'add'], 'class' => 'label-form']) ?>
-            <?= $this->Form->control('name', [
-                'label' => 'ラベル名',
-                'placeholder' => '例: 読書、運動、勉強',
-                'required' => true,
-                'class' => 'form-control'
-            ]) ?>
-            <?= $this->Form->button('登録', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
-        <?= $this->Form->end() ?>
+    <!-- 今日の実績一覧 -->
+    <div class="today-dones-section">
+        <h2>今日の実績</h2>
+        <?php if ($todayDones->count() > 0): ?>
+            <div class="today-dones-list">
+                <?php foreach ($todayDones as $done): ?>
+                    <div class="done-item">
+                        <div class="done-header">
+                            <span class="done-label-name"><?= h($done->label->name) ?></span>
+                            <span class="done-time"><?= $done->created->format('H:i') ?></span>
+                        </div>
+                        <?php if ($done->message): ?>
+                            <div class="done-message"><?= h($done->message) ?></div>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="no-dones">今日の実績はまだありません。</p>
+        <?php endif; ?>
     </div>
 
     <!-- 登録済みラベル一覧 -->
@@ -68,6 +76,20 @@
         <?php else: ?>
             <p class="no-labels">まだラベルが登録されていません。</p>
         <?php endif; ?>
+    </div>
+
+    <!-- ラベル登録フォーム -->
+    <div class="label-form-section">
+        <h2>ラベル登録</h2>
+        <?= $this->Form->create($label, ['url' => ['controller' => 'Labels', 'action' => 'add'], 'class' => 'label-form']) ?>
+            <?= $this->Form->control('name', [
+                'label' => 'ラベル名',
+                'placeholder' => '例: 読書、運動、勉強',
+                'required' => true,
+                'class' => 'form-control'
+            ]) ?>
+            <?= $this->Form->button('登録', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= $this->Form->end() ?>
     </div>
 </div>
 
@@ -288,6 +310,67 @@
 }
 
 .no-labels {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 1.1em;
+    padding: 40px 0;
+}
+
+/* 今日の実績一覧 */
+.today-dones-section {
+    margin-bottom: 40px;
+}
+
+.today-dones-section h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.today-dones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.done-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px 20px;
+    transition: box-shadow 0.3s;
+}
+
+.done-item:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.done-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.done-label-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.done-time {
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+.done-message {
+    margin-top: 10px;
+    font-size: 1em;
+    color: #555;
+    padding-left: 10px;
+    border-left: 3px solid #3498db;
+}
+
+.no-dones {
     text-align: center;
     color: #7f8c8d;
     font-size: 1.1em;

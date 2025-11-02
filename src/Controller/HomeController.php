@@ -18,6 +18,7 @@ class HomeController extends AppController
     public function index()
     {
         $labelsTable = $this->fetchTable('Labels');
+        $donesTable = $this->fetchTable('Dones');
 
         // 新規ラベルエンティティを作成（フォーム表示用）
         $label = $labelsTable->newEmptyEntity();
@@ -27,7 +28,17 @@ class HomeController extends AppController
             'order' => ['Labels.created' => 'DESC']
         ]);
 
-        $this->set(compact('label', 'labels'));
+        // 今日の実績を取得
+        $today = new \DateTime('today');
+        $todayDones = $donesTable->find('all', [
+            'contain' => ['Labels'],
+            'conditions' => [
+                'DATE(Dones.created)' => $today->format('Y-m-d')
+            ],
+            'order' => ['Dones.created' => 'DESC']
+        ]);
+
+        $this->set(compact('label', 'labels', 'todayDones'));
         $this->set('title', 'DonelistV4');
     }
 }
