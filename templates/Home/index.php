@@ -36,11 +36,11 @@
 
     <!-- 登録済みラベル一覧 -->
     <div class="labels-list-section">
-        <h2>登録済みラベル</h2>
+        <h2>登録済みラベル <span class="drag-hint">（ドラッグで並び替え可能）</span></h2>
         <?php if ($labels->count() > 0): ?>
-            <div class="labels-grid">
+            <div class="labels-grid" id="sortable-labels">
                 <?php foreach ($labels as $labelItem): ?>
-                    <div class="label-card">
+                    <div class="label-card" data-id="<?= $labelItem->id ?>">
                         <?= $this->Form->postLink(
                             '×',
                             ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
@@ -376,4 +376,83 @@
     font-size: 1.1em;
     padding: 40px 0;
 }
+
+/* ドラッグヒント */
+.drag-hint {
+    font-size: 0.7em;
+    color: #95a5a6;
+    font-weight: normal;
+}
+
+/* ドラッグ時のスタイル */
+.label-card {
+    cursor: move;
+    cursor: grab;
+}
+
+.label-card:active {
+    cursor: grabbing;
+}
+
+.label-card.sortable-ghost {
+    opacity: 0.4;
+    background: #ecf0f1;
+}
+
+.label-card.sortable-drag {
+    opacity: 0.9;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
 </style>
+
+<!-- SortableJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sortableEl = document.getElementById('sortable-labels');
+
+    if (sortableEl) {
+        const sortable = Sortable.create(sortableEl, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            handle: '.label-card',
+            onEnd: function(evt) {
+                // 並び順を取得
+                const items = sortableEl.querySelectorAll('.label-card');
+                const orders = {};
+
+                items.forEach(function(item, index) {
+                    const id = item.getAttribute('data-id');
+                    orders[id] = index;
+                });
+
+                // サーバーに並び順を送信
+                fetch('/labels/update-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': '<?= $this->request->getAttribute('csrfToken') ?>'
+                    },
+                    body: JSON.stringify({
+                        orders: orders
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        console.error('並び順の更新に失敗しました:', data.message);
+                        // 失敗時は元に戻す
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('エラー:', error);
+                    location.reload();
+                });
+            }
+        });
+    }
+});
+</script>

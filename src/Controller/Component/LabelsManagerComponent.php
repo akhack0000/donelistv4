@@ -40,7 +40,7 @@ class LabelsManagerComponent extends Component
     public function getAllLabels()
     {
         return $this->labelsTable->find('all', [
-            'order' => ['Labels.created' => 'DESC']
+            'order' => ['Labels.display_order' => 'ASC', 'Labels.id' => 'ASC']
         ]);
     }
 
@@ -65,7 +65,42 @@ class LabelsManagerComponent extends Component
         $label = $this->labelsTable->newEmptyEntity();
         $label = $this->labelsTable->patchEntity($label, $data);
 
+        // 新しいラベルには最大のdisplay_orderを設定
+        if (empty($label->display_order)) {
+            $maxOrder = $this->labelsTable->find()
+                ->select(['max_order' => $this->labelsTable->find()->func()->max('display_order')])
+                ->first();
+            $label->display_order = ($maxOrder && $maxOrder->max_order) ? $maxOrder->max_order + 1 : 1;
+        }
+
         return $this->labelsTable->save($label);
+    }
+
+    /**
+     * ラベルの表示順を更新
+     *
+     * @param array $orders ラベルIDと順序の配列 ['id' => order]
+     * @return bool
+     */
+    public function updateDisplayOrders(array $orders): bool
+    {
+        $connection = $this->labelsTable->getConnection();
+
+        try {
+            $connection->begin();
+
+            foreach ($orders as $id => $order) {
+                $label = $this->labelsTable->get($id);
+                $label->display_order = $order;
+                $this->labelsTable->save($label);
+            }
+
+            $connection->commit();
+            return true;
+        } catch (\Exception $e) {
+            $connection->rollback();
+            return false;
+        }
     }
 
     /**

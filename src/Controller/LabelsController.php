@@ -57,4 +57,34 @@ class LabelsController extends AppController
 
         return $this->redirect(['controller' => 'Home', 'action' => 'index']);
     }
+
+    /**
+     * Update display order method
+     * ラベルの表示順を更新
+     *
+     * @return \Cake\Http\Response|null JSON response.
+     */
+    public function updateOrder()
+    {
+        $this->request->allowMethod(['post']);
+        $this->autoRender = false;
+
+        $orders = $this->request->getData('orders');
+
+        if (empty($orders)) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => '並び順データが空です']));
+        }
+
+        if ($this->LabelsManager->updateDisplayOrders($orders)) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['success' => true]));
+        } else {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => '並び順の更新に失敗しました']));
+        }
+    }
 }
