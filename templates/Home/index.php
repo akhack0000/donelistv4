@@ -435,6 +435,8 @@
     line-height: 1.4;
     cursor: pointer;
     align-self: stretch;
+    height: auto;
+    margin: 0;
 }
 
 .btn-edit-done:hover {
