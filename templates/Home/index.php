@@ -253,6 +253,9 @@
     width: 100%;
     border: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-add-done:hover {
