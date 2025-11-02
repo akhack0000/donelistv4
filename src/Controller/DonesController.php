@@ -39,4 +39,24 @@ class DonesController extends AppController
 
         return $this->redirect(['controller' => 'Home', 'action' => 'index']);
     }
+
+    /**
+     * Delete method
+     * 実績を削除
+     *
+     * @param string|null $id Done id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+
+        if ($this->DonesManager->delete($id)) {
+            $this->Flash->success(__('実績を削除しました。'));
+        } else {
+            $this->Flash->error(__('実績の削除に失敗しました。'));
+        }
+
+        return $this->redirect(['controller' => 'Home', 'action' => 'index']);
+    }
 }

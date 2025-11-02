@@ -19,13 +19,24 @@
             <div class="today-dones-list">
                 <?php foreach ($todayDones as $done): ?>
                     <div class="done-item">
-                        <div class="done-header">
-                            <span class="done-label-name"><?= h($done->label->name) ?></span>
-                            <span class="done-time"><?= $done->created->format('H:i') ?></span>
+                        <div class="done-content">
+                            <div class="done-header">
+                                <span class="done-label-name"><?= h($done->label->name) ?></span>
+                                <span class="done-time"><?= $done->created->format('H:i') ?></span>
+                            </div>
+                            <?php if ($done->message): ?>
+                                <div class="done-message"><?= h($done->message) ?></div>
+                            <?php endif; ?>
                         </div>
-                        <?php if ($done->message): ?>
-                            <div class="done-message"><?= h($done->message) ?></div>
-                        <?php endif; ?>
+                        <?= $this->Form->postLink(
+                            '削<br>除',
+                            ['controller' => 'Dones', 'action' => 'delete', $done->id],
+                            [
+                                'confirm' => '本当に削除しますか?',
+                                'class' => 'btn-delete-done',
+                                'escape' => false
+                            ]
+                        ) ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -359,12 +370,42 @@
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    padding: 15px 20px;
+    padding: 0;
     transition: box-shadow 0.3s;
+    display: flex;
+    overflow: hidden;
 }
 
 .done-item:hover {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.done-content {
+    flex: 1;
+    padding: 15px 20px;
+}
+
+.btn-delete-done {
+    background: #e74c3c;
+    color: white;
+    width: 50px;
+    min-height: 100%;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 5px;
+    border-left: 1px solid #c0392b;
+    line-height: 1.4;
+}
+
+.btn-delete-done:hover {
+    background: #c0392b;
+    width: 55px;
 }
 
 .done-header {
