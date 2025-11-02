@@ -97,4 +97,19 @@ class DonesManagerComponent extends Component
     {
         return $this->donesTable->newEmptyEntity();
     }
+
+    /**
+     * 実績を編集
+     *
+     * @param string $id 実績ID
+     * @param array $data 更新データ
+     * @return \App\Model\Entity\Done|false
+     */
+    public function edit(string $id, array $data)
+    {
+        $done = $this->donesTable->get($id);
+        $done = $this->donesTable->patchEntity($done, $data);
+
+        return $this->donesTable->save($done);
+    }
 }

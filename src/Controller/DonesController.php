@@ -41,6 +41,46 @@ class DonesController extends AppController
     }
 
     /**
+     * Edit method
+     * 実績を編集
+     *
+     * @param string|null $id Done id.
+     * @return \Cake\Http\Response|null JSON response.
+     */
+    public function edit($id = null)
+    {
+        $this->request->allowMethod(['post']);
+        $this->viewBuilder()->setClassName('Json');
+
+        $data = $this->request->getData();
+
+        try {
+            if ($this->DonesManager->edit($id, $data)) {
+                $response = [
+                    'success' => true,
+                    'message' => '実績を更新しました。'
+                ];
+            } else {
+                $response = [
+                    'success' => false,
+                    'message' => '実績の更新に失敗しました。'
+                ];
+            }
+        } catch (\Exception $e) {
+            $response = [
+                'success' => false,
+                'message' => 'エラーが発生しました: ' . $e->getMessage()
+            ];
+        }
+
+        $this->set('_serialize', array_keys($response));
+        $this->set($response);
+
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode($response));
+    }
+
+    /**
      * Delete method
      * 実績を削除
      *

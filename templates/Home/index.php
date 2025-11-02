@@ -26,8 +26,14 @@
                             </div>
                             <?php if ($done->message): ?>
                                 <div class="done-message"><?= h($done->message) ?></div>
+                            <?php else: ?>
+                                <div class="done-message-empty">メッセージなし</div>
                             <?php endif; ?>
                         </div>
+                        <button class="btn-edit-done"
+                                onclick="openEditModal(<?= $done->id ?>, '<?= h(addslashes($done->label->name)) ?>', '<?= h(addslashes($done->message ?? '')) ?>')">
+                            編<br>集
+                        </button>
                         <?= $this->Form->postLink(
                             '削<br>除',
                             ['controller' => 'Dones', 'action' => 'delete', $done->id],
@@ -100,6 +106,33 @@
                 'class' => 'form-control'
             ]) ?>
             <?= $this->Form->button('登録', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= $this->Form->end() ?>
+    </div>
+</div>
+
+<!-- 実績編集モーダル -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalLabelName">実績を編集</h3>
+            <span class="modal-close" onclick="closeEditModal()">&times;</span>
+        </div>
+        <?= $this->Form->create(null, ['id' => 'editForm', 'class' => 'modal-form']) ?>
+            <div class="modal-body">
+                <?= $this->Form->control('message', [
+                    'label' => 'メッセージ',
+                    'id' => 'editMessage',
+                    'placeholder' => 'メッセージを入力してください',
+                    'class' => 'modal-input',
+                    'required' => false,
+                    'type' => 'textarea',
+                    'rows' => 3
+                ]) ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">キャンセル</button>
+                <?= $this->Form->button('更新', ['type' => 'submit', 'class' => 'btn-save']) ?>
+            </div>
         <?= $this->Form->end() ?>
     </div>
 </div>
@@ -385,11 +418,34 @@
     padding: 15px 20px;
 }
 
+.btn-edit-done {
+    background: #3498db;
+    color: white;
+    width: 50px;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 5px;
+    border: none;
+    border-left: 1px solid #2980b9;
+    line-height: 1.4;
+    cursor: pointer;
+    align-self: stretch;
+}
+
+.btn-edit-done:hover {
+    background: #2980b9;
+    width: 55px;
+}
+
 .btn-delete-done {
     background: #e74c3c;
     color: white;
     width: 50px;
-    min-height: 100%;
     text-decoration: none;
     font-size: 0.9em;
     font-weight: 500;
@@ -401,6 +457,7 @@
     padding: 10px 5px;
     border-left: 1px solid #c0392b;
     line-height: 1.4;
+    align-self: stretch;
 }
 
 .btn-delete-done:hover {
@@ -412,6 +469,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 8px;
 }
 
 .done-label-name {
@@ -426,11 +484,20 @@
 }
 
 .done-message {
-    margin-top: 10px;
+    margin-top: 8px;
+    margin-bottom: 10px;
     font-size: 1em;
     color: #555;
     padding-left: 10px;
     border-left: 3px solid #3498db;
+}
+
+.done-message-empty {
+    margin-top: 8px;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+    color: #95a5a6;
+    font-style: italic;
 }
 
 .no-dones {
@@ -465,6 +532,139 @@
 .label-card.sortable-drag {
     opacity: 0.9;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* モーダルスタイル */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #2c3e50;
+}
+
+.modal-close {
+    font-size: 2em;
+    line-height: 1;
+    color: #7f8c8d;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.modal-close:hover {
+    color: #2c3e50;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-form .input {
+    margin: 0;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #e0e0e0;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background: #95a5a6;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #7f8c8d;
+}
+
+.btn-save {
+    background: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-save:hover {
+    background: #2980b9;
 }
 </style>
 
@@ -517,5 +717,68 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+});
+
+// モーダル制御
+let currentDoneId = null;
+
+function openEditModal(doneId, labelName, message) {
+    currentDoneId = doneId;
+    document.getElementById('modalLabelName').textContent = labelName + ' - 実績を編集';
+    document.getElementById('editMessage').value = message;
+    document.getElementById('editModal').classList.add('show');
+
+    // モーダル外クリックで閉じる
+    document.getElementById('editModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEditModal();
+        }
+    });
+
+    // ESCキーで閉じる
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('editModal').classList.contains('show')) {
+            closeEditModal();
+        }
+    });
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('show');
+    currentDoneId = null;
+}
+
+// モーダルフォーム送信処理
+document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!currentDoneId) {
+        alert('エラー: 実績IDが取得できませんでした。');
+        return;
+    }
+
+    const message = document.getElementById('editMessage').value;
+    const formData = new FormData();
+    formData.append('message', message);
+
+    fetch('/dones/edit/' + currentDoneId, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': '<?= $this->request->getAttribute('csrfToken') ?>'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('更新に失敗しました: ' + (data.message || '不明なエラー'));
+        }
+    })
+    .catch(error => {
+        console.error('エラー:', error);
+        alert('通信エラーが発生しました。');
+    });
 });
 </script>
