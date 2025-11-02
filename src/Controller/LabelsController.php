@@ -11,6 +11,17 @@ namespace App\Controller;
 class LabelsController extends AppController
 {
     /**
+     * Initialize method
+     *
+     * @return void
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('LabelsManager', ['className' => 'Labels']);
+    }
+
+    /**
      * Add method
      *
      * @return \Cake\Http\Response|null Redirects on successful add.
@@ -18,12 +29,8 @@ class LabelsController extends AppController
     public function add()
     {
         $this->request->allowMethod(['post']);
-        $labelsTable = $this->fetchTable('Labels');
 
-        $label = $labelsTable->newEmptyEntity();
-        $label = $labelsTable->patchEntity($label, $this->request->getData());
-
-        if ($labelsTable->save($label)) {
+        if ($this->LabelsManager->add($this->request->getData())) {
             $this->Flash->success('ラベルが登録されました。');
         } else {
             $this->Flash->error('ラベルの登録に失敗しました。');
@@ -41,10 +48,8 @@ class LabelsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $labelsTable = $this->fetchTable('Labels');
-        $label = $labelsTable->get($id);
 
-        if ($labelsTable->delete($label)) {
+        if ($this->LabelsManager->delete($id)) {
             $this->Flash->success('ラベルが削除されました。');
         } else {
             $this->Flash->error('ラベルの削除に失敗しました。');
