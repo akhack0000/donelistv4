@@ -25,12 +25,41 @@ class DonesController extends AppController
      * Add method
      * 実績を登録
      *
-     * @return \Cake\Http\Response|null|void Redirects on successful add.
+     * @return \Cake\Http\Response|null|void Redirects on successful add or JSON response.
      */
     public function add()
     {
         $this->request->allowMethod(['post']);
 
+        // AJAXリクエストの場合はJSON応答
+        if ($this->request->is('ajax') || $this->request->accepts('application/json')) {
+            $this->autoRender = false;
+
+            try {
+                if ($this->DonesManager->add($this->request->getData())) {
+                    $response = [
+                        'success' => true,
+                        'message' => '実績を登録しました。'
+                    ];
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => '実績の登録に失敗しました。'
+                    ];
+                }
+            } catch (\Exception $e) {
+                $response = [
+                    'success' => false,
+                    'message' => 'エラーが発生しました: ' . $e->getMessage()
+                ];
+            }
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode($response));
+        }
+
+        // 通常のフォーム送信の場合
         if ($this->DonesManager->add($this->request->getData())) {
             $this->Flash->success(__('実績を登録しました。'));
         } else {
@@ -85,12 +114,41 @@ class DonesController extends AppController
      * 実績を削除
      *
      * @param string|null $id Done id.
-     * @return \Cake\Http\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index or JSON response.
      */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
+        // AJAXリクエストの場合はJSON応答
+        if ($this->request->is('ajax') || $this->request->accepts('application/json')) {
+            $this->autoRender = false;
+
+            try {
+                if ($this->DonesManager->delete($id)) {
+                    $response = [
+                        'success' => true,
+                        'message' => '実績を削除しました。'
+                    ];
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => '実績の削除に失敗しました。'
+                    ];
+                }
+            } catch (\Exception $e) {
+                $response = [
+                    'success' => false,
+                    'message' => 'エラーが発生しました: ' . $e->getMessage()
+                ];
+            }
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode($response));
+        }
+
+        // 通常のフォーム送信の場合
         if ($this->DonesManager->delete($id)) {
             $this->Flash->success(__('実績を削除しました。'));
         } else {

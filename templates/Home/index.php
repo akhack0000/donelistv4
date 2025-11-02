@@ -34,15 +34,10 @@
                                 onclick="openEditModal(<?= $done->id ?>, '<?= h(addslashes($done->label->name)) ?>', '<?= h(addslashes($done->message ?? '')) ?>')">
                             編<br>集
                         </button>
-                        <?= $this->Form->postLink(
-                            '削<br>除',
-                            ['controller' => 'Dones', 'action' => 'delete', $done->id],
-                            [
-                                'confirm' => '本当に削除しますか?',
-                                'class' => 'btn-delete-done',
-                                'escape' => false
-                            ]
-                        ) ?>
+                        <button class="btn-delete-done"
+                                onclick="deleteDone(event, <?= $done->id ?>)">
+                            削<br>除
+                        </button>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -58,35 +53,20 @@
             <div class="labels-grid" id="sortable-labels">
                 <?php foreach ($labels as $labelItem): ?>
                     <div class="label-card" data-id="<?= $labelItem->id ?>">
-                        <?= $this->Form->postLink(
-                            '×',
-                            ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
-                            [
-                                'confirm' => '本当に削除しますか?',
-                                'class' => 'btn-delete',
-                                'escape' => false
-                            ]
-                        ) ?>
+                        <button class="btn-delete" onclick="deleteLabel(event, <?= $labelItem->id ?>)">×</button>
                         <div class="label-info">
                             <span class="label-name"><?= h($labelItem->name) ?></span>
                             <span class="label-date"><?= $labelItem->created->format('Y-m-d H:i') ?></span>
                         </div>
-                        <?= $this->Form->create(null, [
-                            'url' => ['controller' => 'Dones', 'action' => 'add'],
-                            'class' => 'done-form'
-                        ]) ?>
-                            <?= $this->Form->hidden('label_id', ['value' => $labelItem->id]) ?>
-                            <?= $this->Form->control('message', [
-                                'label' => false,
-                                'placeholder' => 'メッセージ（任意）',
-                                'class' => 'message-input',
-                                'required' => false
-                            ]) ?>
-                            <?= $this->Form->button('記録', [
-                                'type' => 'submit',
-                                'class' => 'btn-add-done'
-                            ]) ?>
-                        <?= $this->Form->end() ?>
+                        <form class="done-form" onsubmit="addDone(event, <?= $labelItem->id ?>)">
+                            <input type="hidden" name="label_id" value="<?= $labelItem->id ?>">
+                            <input type="text"
+                                   name="message"
+                                   placeholder="メッセージ（任意）"
+                                   class="message-input"
+                                   id="message-<?= $labelItem->id ?>">
+                            <button type="submit" class="btn-add-done">記録</button>
+                        </form>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -98,15 +78,18 @@
     <!-- ラベル登録フォーム -->
     <div class="label-form-section">
         <h2>ラベル登録</h2>
-        <?= $this->Form->create($label, ['url' => ['controller' => 'Labels', 'action' => 'add'], 'class' => 'label-form']) ?>
-            <?= $this->Form->control('name', [
-                'label' => 'ラベル名',
-                'placeholder' => '例: 読書、運動、勉強',
-                'required' => true,
-                'class' => 'form-control'
-            ]) ?>
-            <?= $this->Form->button('登録', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
-        <?= $this->Form->end() ?>
+        <form class="label-form" onsubmit="addLabel(event)">
+            <div class="input">
+                <label for="label-name">ラベル名</label>
+                <input type="text"
+                       name="name"
+                       id="label-name"
+                       placeholder="例: 読書、運動、勉強"
+                       required
+                       class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">登録</button>
+        </form>
     </div>
 </div>
 
@@ -346,6 +329,8 @@
     align-items: center;
     justify-content: center;
     padding: 0;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-delete:hover {
@@ -457,9 +442,11 @@
     align-items: center;
     justify-content: center;
     padding: 10px 5px;
+    border: none;
     border-left: 1px solid #c0392b;
     line-height: 1.4;
     align-self: stretch;
+    cursor: pointer;
 }
 
 .btn-delete-done:hover {
@@ -674,6 +661,147 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
+// CSRF Token取得
+const csrfToken = '<?= $this->request->getAttribute('csrfToken') ?>';
+
+// 実績記録
+function addDone(event, labelId) {
+    event.preventDefault();
+
+    const messageInput = document.getElementById('message-' + labelId);
+    const message = messageInput.value;
+
+    const formData = new FormData();
+    formData.append('label_id', labelId);
+    formData.append('message', message);
+
+    fetch('/dones/add', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // メッセージ入力をクリア
+            messageInput.value = '';
+            // ページをリロードして実績リストを更新
+            location.reload();
+        } else {
+            alert('エラー: ' + (data.message || '実績の登録に失敗しました。'));
+        }
+    })
+    .catch(error => {
+        console.error('エラー:', error);
+        alert('通信エラーが発生しました。');
+    });
+}
+
+// 実績削除
+function deleteDone(event, doneId) {
+    event.preventDefault();
+
+    if (!confirm('本当に削除しますか?')) {
+        return;
+    }
+
+    fetch('/dones/delete/' + doneId, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // ページをリロードして実績リストを更新
+            location.reload();
+        } else {
+            alert('エラー: ' + (data.message || '実績の削除に失敗しました。'));
+        }
+    })
+    .catch(error => {
+        console.error('エラー:', error);
+        alert('通信エラーが発生しました。');
+    });
+}
+
+// ラベル登録
+function addLabel(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const nameInput = form.querySelector('#label-name');
+    const name = nameInput.value.trim();
+
+    if (!name) {
+        alert('ラベル名を入力してください。');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', name);
+
+    fetch('/labels/add', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // フォームをクリア
+            nameInput.value = '';
+            // ページをリロードしてラベルリストを更新
+            location.reload();
+        } else {
+            alert('エラー: ' + (data.message || 'ラベルの登録に失敗しました。'));
+        }
+    })
+    .catch(error => {
+        console.error('エラー:', error);
+        alert('通信エラーが発生しました。');
+    });
+}
+
+// ラベル削除
+function deleteLabel(event, labelId) {
+    event.preventDefault();
+    event.stopPropagation(); // ドラッグイベントとの干渉を防ぐ
+
+    if (!confirm('本当に削除しますか?')) {
+        return;
+    }
+
+    fetch('/labels/delete/' + labelId, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // ページをリロードしてラベルリストを更新
+            location.reload();
+        } else {
+            alert('エラー: ' + (data.message || 'ラベルの削除に失敗しました。'));
+        }
+    })
+    .catch(error => {
+        console.error('エラー:', error);
+        alert('通信エラーが発生しました。');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const sortableEl = document.getElementById('sortable-labels');
 
@@ -726,7 +854,7 @@ let currentDoneId = null;
 
 function openEditModal(doneId, labelName, message) {
     currentDoneId = doneId;
-    document.getElementById('modalLabelName').textContent = labelName + ' - 実績を編集';
+    document.getElementById('modalLabelName').textContent = ' 実績を編集 - ' + labelName;
     document.getElementById('editMessage').value = message;
     document.getElementById('editModal').classList.add('show');
 

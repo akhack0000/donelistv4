@@ -24,12 +24,41 @@ class LabelsController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null Redirects on successful add.
+     * @return \Cake\Http\Response|null Redirects on successful add or JSON response.
      */
     public function add()
     {
         $this->request->allowMethod(['post']);
 
+        // AJAXリクエストの場合はJSON応答
+        if ($this->request->is('ajax') || $this->request->accepts('application/json')) {
+            $this->autoRender = false;
+
+            try {
+                if ($this->LabelsManager->add($this->request->getData())) {
+                    $response = [
+                        'success' => true,
+                        'message' => 'ラベルが登録されました。'
+                    ];
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => 'ラベルの登録に失敗しました。'
+                    ];
+                }
+            } catch (\Exception $e) {
+                $response = [
+                    'success' => false,
+                    'message' => 'エラーが発生しました: ' . $e->getMessage()
+                ];
+            }
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode($response));
+        }
+
+        // 通常のフォーム送信の場合
         if ($this->LabelsManager->add($this->request->getData())) {
             $this->Flash->success('ラベルが登録されました。');
         } else {
@@ -43,12 +72,41 @@ class LabelsController extends AppController
      * Delete method
      *
      * @param string|null $id Label id.
-     * @return \Cake\Http\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index or JSON response.
      */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
+        // AJAXリクエストの場合はJSON応答
+        if ($this->request->is('ajax') || $this->request->accepts('application/json')) {
+            $this->autoRender = false;
+
+            try {
+                if ($this->LabelsManager->delete($id)) {
+                    $response = [
+                        'success' => true,
+                        'message' => 'ラベルが削除されました。'
+                    ];
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => 'ラベルの削除に失敗しました。'
+                    ];
+                }
+            } catch (\Exception $e) {
+                $response = [
+                    'success' => false,
+                    'message' => 'エラーが発生しました: ' . $e->getMessage()
+                ];
+            }
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode($response));
+        }
+
+        // 通常のフォーム送信の場合
         if ($this->LabelsManager->delete($id)) {
             $this->Flash->success('ラベルが削除されました。');
         } else {
