@@ -55,7 +55,11 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/', ['controller' => 'Home', 'action' => 'index']);
         $builder->connect('/home', ['controller' => 'Home', 'action' => 'index']);
-        $builder->connect('/home/delete/{id}', ['controller' => 'Home', 'action' => 'delete'])
+
+        // Labels routes
+        $builder->connect('/labels/add', ['controller' => 'Labels', 'action' => 'add'])
+            ->setMethods(['POST']);
+        $builder->connect('/labels/delete/{id}', ['controller' => 'Labels', 'action' => 'delete'])
             ->setPass(['id'])
             ->setMethods(['POST', 'DELETE']);
 

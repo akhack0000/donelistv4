@@ -31,5 +31,5 @@ gitルール
 
 開発手順
 - 指示通りにコード修正
-- Chrome devtools mcpを活用して動作確認
+- Chrome devtools mcpを活用してlocalhost:8080にアクセスして動作確認
 - 問題なければgitに反映

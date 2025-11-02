@@ -15,7 +15,7 @@
     <!-- ラベル登録フォーム -->
     <div class="label-form-section">
         <h2>ラベル登録</h2>
-        <?= $this->Form->create($label, ['class' => 'label-form']) ?>
+        <?= $this->Form->create($label, ['url' => ['controller' => 'Labels', 'action' => 'add'], 'class' => 'label-form']) ?>
             <?= $this->Form->control('name', [
                 'label' => 'ラベル名',
                 'placeholder' => '例: 読書、運動、勉強',
@@ -39,7 +39,7 @@
                         </div>
                         <?= $this->Form->postLink(
                             '削除',
-                            ['action' => 'delete', $labelItem->id],
+                            ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
                             [
                                 'confirm' => '本当に削除しますか?',
                                 'class' => 'btn-delete'
