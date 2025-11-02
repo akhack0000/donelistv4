@@ -360,7 +360,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 350px;
+    max-height: 500px;
     overflow-y: auto;
     padding: 12px;
     padding-right: 12px;
