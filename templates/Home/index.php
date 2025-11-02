@@ -37,14 +37,24 @@
                             <span class="label-name"><?= h($labelItem->name) ?></span>
                             <span class="label-date"><?= $labelItem->created->format('Y-m-d H:i') ?></span>
                         </div>
-                        <?= $this->Form->postLink(
-                            '削除',
-                            ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
-                            [
-                                'confirm' => '本当に削除しますか?',
-                                'class' => 'btn-delete'
-                            ]
-                        ) ?>
+                        <div class="label-actions">
+                            <?= $this->Form->postLink(
+                                '実績登録',
+                                ['controller' => 'Dones', 'action' => 'add'],
+                                [
+                                    'data' => ['label_id' => $labelItem->id],
+                                    'class' => 'btn-add-done'
+                                ]
+                            ) ?>
+                            <?= $this->Form->postLink(
+                                '削除',
+                                ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
+                                [
+                                    'confirm' => '本当に削除しますか?',
+                                    'class' => 'btn-delete'
+                                ]
+                            ) ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -200,6 +210,27 @@
     color: #7f8c8d;
 }
 
+.label-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-add-done {
+    background: #27ae60;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+    transition: background 0.3s;
+    flex: 1;
+}
+
+.btn-add-done:hover {
+    background: #229954;
+}
+
 .btn-delete {
     background: #e74c3c;
     color: white;
@@ -209,6 +240,7 @@
     font-size: 0.9em;
     text-align: center;
     transition: background 0.3s;
+    flex: 1;
 }
 
 .btn-delete:hover {
