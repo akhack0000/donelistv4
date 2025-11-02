@@ -360,28 +360,35 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
-    padding-right: 8px;
+    padding: 12px;
+    padding-right: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    scroll-behavior: smooth;
 }
 
 /* スクロールバーのスタイル */
 .today-dones-list::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 .today-dones-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: #e9ecef;
+    border-radius: 5px;
+    margin: 8px 0;
 }
 
 .today-dones-list::-webkit-scrollbar-thumb {
-    background: #bdc3c7;
-    border-radius: 4px;
+    background: #95a5a6;
+    border-radius: 5px;
+    border: 2px solid #e9ecef;
 }
 
 .today-dones-list::-webkit-scrollbar-thumb:hover {
-    background: #95a5a6;
+    background: #7f8c8d;
 }
 
 .done-item {
