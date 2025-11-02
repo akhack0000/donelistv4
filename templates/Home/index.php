@@ -360,7 +360,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 500px;
+    max-height: 350px;
     overflow-y: auto;
     padding: 12px;
     padding-right: 12px;
@@ -399,6 +399,8 @@
     transition: box-shadow 0.3s;
     display: flex;
     overflow: hidden;
+    flex-shrink: 0;
+    min-height: 80px;
 }
 
 .done-item:hover {
