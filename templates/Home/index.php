@@ -331,6 +331,28 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* スクロールバーのスタイル */
+.today-dones-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.today-dones-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.today-dones-list::-webkit-scrollbar-thumb {
+    background: #bdc3c7;
+    border-radius: 4px;
+}
+
+.today-dones-list::-webkit-scrollbar-thumb:hover {
+    background: #95a5a6;
 }
 
 .done-item {
