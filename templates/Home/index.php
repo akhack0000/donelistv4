@@ -37,24 +37,32 @@
                             <span class="label-name"><?= h($labelItem->name) ?></span>
                             <span class="label-date"><?= $labelItem->created->format('Y-m-d H:i') ?></span>
                         </div>
-                        <div class="label-actions">
-                            <?= $this->Form->postLink(
-                                '実績登録',
-                                ['controller' => 'Dones', 'action' => 'add'],
-                                [
-                                    'data' => ['label_id' => $labelItem->id],
+                        <?= $this->Form->create(null, [
+                            'url' => ['controller' => 'Dones', 'action' => 'add'],
+                            'class' => 'done-form'
+                        ]) ?>
+                            <?= $this->Form->hidden('label_id', ['value' => $labelItem->id]) ?>
+                            <?= $this->Form->control('message', [
+                                'label' => false,
+                                'placeholder' => 'メッセージ（任意）',
+                                'class' => 'message-input',
+                                'required' => false
+                            ]) ?>
+                            <div class="label-actions">
+                                <?= $this->Form->button('実績登録', [
+                                    'type' => 'submit',
                                     'class' => 'btn-add-done'
-                                ]
-                            ) ?>
-                            <?= $this->Form->postLink(
-                                '削除',
-                                ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
-                                [
-                                    'confirm' => '本当に削除しますか?',
-                                    'class' => 'btn-delete'
-                                ]
-                            ) ?>
-                        </div>
+                                ]) ?>
+                                <?= $this->Form->postLink(
+                                    '削除',
+                                    ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
+                                    [
+                                        'confirm' => '本当に削除しますか?',
+                                        'class' => 'btn-delete'
+                                    ]
+                                ) ?>
+                            </div>
+                        <?= $this->Form->end() ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -182,14 +190,37 @@
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     transition: box-shadow 0.3s;
 }
 
 .label-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.done-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.done-form .input {
+    margin: 0;
+}
+
+.message-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.message-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .label-info {
