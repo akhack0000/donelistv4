@@ -33,6 +33,15 @@
             <div class="labels-grid">
                 <?php foreach ($labels as $labelItem): ?>
                     <div class="label-card">
+                        <?= $this->Form->postLink(
+                            '×',
+                            ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
+                            [
+                                'confirm' => '本当に削除しますか?',
+                                'class' => 'btn-delete',
+                                'escape' => false
+                            ]
+                        ) ?>
                         <div class="label-info">
                             <span class="label-name"><?= h($labelItem->name) ?></span>
                             <span class="label-date"><?= $labelItem->created->format('Y-m-d H:i') ?></span>
@@ -48,20 +57,10 @@
                                 'class' => 'message-input',
                                 'required' => false
                             ]) ?>
-                            <div class="label-actions">
-                                <?= $this->Form->button('実績登録', [
-                                    'type' => 'submit',
-                                    'class' => 'btn-add-done'
-                                ]) ?>
-                                <?= $this->Form->postLink(
-                                    '削除',
-                                    ['controller' => 'Labels', 'action' => 'delete', $labelItem->id],
-                                    [
-                                        'confirm' => '本当に削除しますか?',
-                                        'class' => 'btn-delete'
-                                    ]
-                                ) ?>
-                            </div>
+                            <?= $this->Form->button('実績登録', [
+                                'type' => 'submit',
+                                'class' => 'btn-add-done'
+                            ]) ?>
                         <?= $this->Form->end() ?>
                     </div>
                 <?php endforeach; ?>
@@ -191,6 +190,7 @@
     border-radius: 8px;
     padding: 20px;
     transition: box-shadow 0.3s;
+    position: relative;
 }
 
 .label-card:hover {
@@ -241,21 +241,18 @@
     color: #7f8c8d;
 }
 
-.label-actions {
-    display: flex;
-    gap: 10px;
-}
-
 .btn-add-done {
     background: #27ae60;
     color: white;
-    padding: 8px 16px;
+    padding: 12px 16px;
     text-decoration: none;
     border-radius: 4px;
     font-size: 0.9em;
     text-align: center;
     transition: background 0.3s;
-    flex: 1;
+    width: 100%;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-add-done:hover {
@@ -263,19 +260,28 @@
 }
 
 .btn-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     background: #e74c3c;
     color: white;
-    padding: 8px 16px;
+    width: 28px;
+    height: 28px;
     text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9em;
+    border-radius: 50%;
+    font-size: 1.2em;
+    line-height: 1;
     text-align: center;
-    transition: background 0.3s;
-    flex: 1;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
 .btn-delete:hover {
     background: #c0392b;
+    transform: scale(1.1);
 }
 
 .no-labels {
