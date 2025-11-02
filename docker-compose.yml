@@ -49,6 +49,20 @@ services:
     networks:
       - donelistv4_network
 
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: donelistv4_pgadmin
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    networks:
+      - donelistv4_network
+
 networks:
   donelistv4_network:
     driver: bridge
